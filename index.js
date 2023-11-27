@@ -28,12 +28,39 @@ async function run() {
         await client.connect();
 
         const packageCollection = client.db('travelBangla').collection('packages');
+        const userCollection = client.db('travelBangla').collection('users');
 
         // packages Related API
         app.get('/api/v1/packages', async (req, res) => {
             const result = await packageCollection.find().toArray();
             res.send(result);
         })
+
+        // User Related API
+        app.get('/api/v1/users', async (req, res) => {
+            const result = await userCollection.find().toArray();
+            res.send(result);
+        })
+
+
+        app.post('/api/v1/user', async (req, res) => {
+            const user = req.body;
+
+            console.log(user);
+
+            const query = { email: user.email }
+            const existingUser = await userCollection.findOne(query);
+            if (existingUser) {
+                return res.send({ message: 'User already exists', insertedId: null })
+            }
+            const result = await userCollection.insertOne(user);
+            res.send(result)
+        })
+
+
+
+
+
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
