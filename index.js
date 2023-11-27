@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const cors = require('cors');
+var jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const port = process.env.PORT || 5000;
 
@@ -30,6 +31,13 @@ async function run() {
         const packageCollection = client.db('travelBangla').collection('packages');
         const userCollection = client.db('travelBangla').collection('users');
 
+        // JWT Related API
+        app.post('/api/v1/jwt', async (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+            res.send({ token })
+        })
+
         // packages Related API
         app.get('/api/v1/packages', async (req, res) => {
             const result = await packageCollection.find().toArray();
@@ -45,8 +53,6 @@ async function run() {
 
         app.post('/api/v1/user', async (req, res) => {
             const user = req.body;
-
-            console.log(user);
 
             const query = { email: user.email }
             const existingUser = await userCollection.findOne(query);
