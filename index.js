@@ -3,7 +3,7 @@ const app = express();
 require('dotenv').config();
 const cors = require('cors');
 var jwt = require('jsonwebtoken');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 // MiddleWare
@@ -67,6 +67,20 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/api/v1/user/admin/:email', verifyToken, async (req, res) => {
+            const email = req.params.email;
+            if (email !== req.decoded.email) {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
+            const query = { email: email }
+            const user = await userCollection.findOne(query);
+            let admin = false;
+            if (user) {
+                admin = user?.role === 'admin'
+            }
+            res.send({ admin });
+        })
+
 
         app.post('/api/v1/user', async (req, res) => {
             const user = req.body;
@@ -77,6 +91,32 @@ async function run() {
                 return res.send({ message: 'User already exists', insertedId: null })
             }
             const result = await userCollection.insertOne(user);
+            res.send(result)
+        })
+
+        app.patch('/api/v1/user/admin/:id', verifyToken, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+
+            const updatedDoc = {
+                $set: {
+                    role: 'admin'
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc)
+            res.send(result)
+        })
+
+        app.patch('/api/v1/user/guide/:id', verifyToken, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+
+            const updatedDoc = {
+                $set: {
+                    role: 'tourGuide'
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc)
             res.send(result)
         })
 
