@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const packageCollection = client.db('travelBangla').collection('packages');
         const userCollection = client.db('travelBangla').collection('users');
@@ -55,6 +55,18 @@ async function run() {
             });
         }
 
+        // use verifyAdmin after verifyToken
+        const verifyAdmin = async (req, res, next) => {
+            const email = req.decoded.email;
+            const query = { email: email };
+            const user = await userCollection.findOne(query);
+            const isAdmin = user?.role === 'admin';
+            if (!isAdmin) {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
+            next()
+        }
+
         // packages Related API
         app.get('/api/v1/packages', async (req, res) => {
             const result = await packageCollection.find().toArray();
@@ -62,7 +74,7 @@ async function run() {
         })
 
         // User Related API
-        app.get('/api/v1/users', verifyToken, async (req, res) => {
+        app.get('/api/v1/users', verifyToken, verifyAdmin, async (req, res) => {
             const result = await userCollection.find().toArray();
             res.send(result);
         })
