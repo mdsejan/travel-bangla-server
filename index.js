@@ -38,6 +38,23 @@ async function run() {
             res.send({ token })
         })
 
+
+        // middlewares
+        const verifyToken = (req, res, next) => {
+            if (!req.headers.authorization) {
+                return res.status(401).send({ message: 'unauthorized access' })
+            }
+            const token = req.headers.authorization.split(' ')[1]
+
+            jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+                if (err) {
+                    return res.status(401).send({ message: 'unauthorized access' })
+                }
+                req.decoded = decoded;
+                next()
+            });
+        }
+
         // packages Related API
         app.get('/api/v1/packages', async (req, res) => {
             const result = await packageCollection.find().toArray();
@@ -45,7 +62,7 @@ async function run() {
         })
 
         // User Related API
-        app.get('/api/v1/users', async (req, res) => {
+        app.get('/api/v1/users', verifyToken, async (req, res) => {
             const result = await userCollection.find().toArray();
             res.send(result);
         })
