@@ -30,6 +30,7 @@ async function run() {
 
         const packageCollection = client.db('travelBangla').collection('packages');
         const userCollection = client.db('travelBangla').collection('users');
+        const wishListCollection = client.db('travelBangla').collection('wishList');
 
         // JWT Related API
         app.post('/api/v1/jwt', async (req, res) => {
@@ -129,6 +130,17 @@ async function run() {
                 }
             }
             const result = await userCollection.updateOne(filter, updatedDoc)
+            res.send(result)
+        })
+
+
+        // wishlist Related API
+        app.post('/api/v1/wishList', async (req, res) => {
+            const wishPackage = req.body;
+
+            console.log(wishPackage);
+
+            const result = await wishListCollection.insertOne(wishPackage);
             res.send(result)
         })
 
