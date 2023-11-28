@@ -31,6 +31,7 @@ async function run() {
         const packageCollection = client.db('travelBangla').collection('packages');
         const userCollection = client.db('travelBangla').collection('users');
         const wishListCollection = client.db('travelBangla').collection('wishList');
+        const tourTypeCollection = client.db('travelBangla').collection('tourType');
 
         // JWT Related API
         app.post('/api/v1/jwt', async (req, res) => {
@@ -195,6 +196,14 @@ async function run() {
             const result = await wishListCollection.deleteOne(query)
             res.send(result)
         })
+
+        // Tour Type API
+        app.get('/api/v1/tourTypes', async (req, res) => {
+            const result = await tourTypeCollection.find().toArray();
+            res.send(result);
+        })
+
+
 
 
 
