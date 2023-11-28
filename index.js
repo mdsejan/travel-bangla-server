@@ -135,10 +135,22 @@ async function run() {
 
 
         // wishlist Related API
+        app.get('/api/v1/wishList', async (req, res) => {
+
+            const user = req.query.user;
+
+            const query = {}
+
+            if (user) {
+                query.userEmail = user
+            }
+
+            const result = await wishListCollection.find(query).toArray();
+            res.send(result);
+        })
+
         app.post('/api/v1/wishList', async (req, res) => {
             const wishPackage = req.body;
-
-            console.log(wishPackage);
 
             const result = await wishListCollection.insertOne(wishPackage);
             res.send(result)
