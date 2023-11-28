@@ -81,11 +81,11 @@ async function run() {
         })
 
         //verify admin
-        app.get('/api/v1/user/admin/:email', verifyToken, async (req, res) => {
+        app.get('/api/v1/user/admin/:email', async (req, res) => {
             const email = req.params.email;
-            if (email !== req.decoded.email) {
-                return res.status(403).send({ message: 'forbidden access' })
-            }
+            // if (email !== req.decoded.email) {
+            //     return res.status(403).send({ message: 'forbidden access' })
+            // }
             const query = { email: email }
             const user = await userCollection.findOne(query);
             let admin = false;
@@ -96,11 +96,11 @@ async function run() {
         })
 
         //verify tourist
-        app.get('/api/v1/user/tourist/:email', verifyToken, async (req, res) => {
+        app.get('/api/v1/user/tourist/:email', async (req, res) => {
             const email = req.params.email;
-            if (email !== req.decoded.email) {
-                return res.status(403).send({ message: 'forbidden access' })
-            }
+            // if (email !== req.decoded.email) {
+            //     return res.status(403).send({ message: 'forbidden access' })
+            // }
             const query = { email: email }
             const user = await userCollection.findOne(query);
             let tourist = false;
@@ -112,11 +112,11 @@ async function run() {
 
 
         // verify tour guide
-        app.get('/api/v1/user/tourguide/:email', verifyToken, async (req, res) => {
+        app.get('/api/v1/user/tourguide/:email', async (req, res) => {
             const email = req.params.email;
-            if (email !== req.decoded.email) {
-                return res.status(403).send({ message: 'forbidden access' })
-            }
+            // if (email !== req.decoded.email) {
+            //     return res.status(403).send({ message: 'forbidden access' })
+            // }
             const query = { email: email }
             const user = await userCollection.findOne(query);
             let tourGuide = false;
