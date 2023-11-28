@@ -94,6 +94,20 @@ async function run() {
             res.send({ admin });
         })
 
+        app.get('/api/v1/user/tourist/:email', verifyToken, async (req, res) => {
+            const email = req.params.email;
+            if (email !== req.decoded.email) {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
+            const query = { email: email }
+            const user = await userCollection.findOne(query);
+            let tourist = false;
+            if (user) {
+                tourist = user?.role === 'tourist'
+            }
+            res.send({ tourist });
+        })
+
 
         app.post('/api/v1/user', async (req, res) => {
             const user = req.body;
