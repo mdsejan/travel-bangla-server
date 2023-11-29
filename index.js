@@ -32,6 +32,7 @@ async function run() {
         const userCollection = client.db('travelBangla').collection('users');
         const wishListCollection = client.db('travelBangla').collection('wishList');
         const tourTypeCollection = client.db('travelBangla').collection('tourType');
+        const bookingCollection = client.db('travelBangla').collection('bookings');
 
         // JWT Related API
         app.post('/api/v1/jwt', async (req, res) => {
@@ -140,6 +141,7 @@ async function run() {
             res.send({ tourGuide });
         })
 
+        // Get tour guide
         app.get('/api/v1/tourguide', async (req, res) => {
             const query = { role: "tourGuide" }
             const result = await userCollection.find(query).toArray();
@@ -221,6 +223,14 @@ async function run() {
             const result = await tourTypeCollection.find().toArray();
             res.send(result);
         })
+
+        // Booking Related API
+        app.post('/api/v1/booking', async (req, res) => {
+            const bookingData = req.body;
+            const result = await bookingCollection.insertOne(bookingData);
+            res.send(result)
+        })
+
 
 
 
