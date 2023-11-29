@@ -249,8 +249,12 @@ async function run() {
             res.send(result)
         })
 
-
-
+        app.delete('/api/v1/delbooking/:bookingId', async (req, res) => {
+            const id = req.params.bookingId;
+            const query = { _id: new ObjectId(id) }
+            const result = await bookingCollection.deleteOne(query)
+            res.send(result)
+        })
 
 
 
