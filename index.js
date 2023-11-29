@@ -71,7 +71,20 @@ async function run() {
 
         // packages Related API
         app.get('/api/v1/packages', async (req, res) => {
-            const result = await packageCollection.find().toArray();
+            const tourType = req.query.type;
+            const item = req.query.id;
+
+            let query = {}
+
+            if (tourType) {
+                query.tourType = tourType
+            }
+
+            if (item) {
+                query._id = new ObjectId(item)
+            }
+
+            const result = await packageCollection.find(query).toArray();
             res.send(result);
         })
 
@@ -140,7 +153,7 @@ async function run() {
             res.send(result)
         })
 
-        app.patch('/api/v1/user/admin/:id', verifyToken, async (req, res) => {
+        app.patch('/api/v1/user/admin/:id', verifyToken, verifyAdmin, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
 
@@ -153,7 +166,7 @@ async function run() {
             res.send(result)
         })
 
-        app.patch('/api/v1/user/guide/:id', verifyToken, async (req, res) => {
+        app.patch('/api/v1/user/guide/:id', verifyToken, verifyAdmin, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
 
