@@ -225,6 +225,24 @@ async function run() {
         })
 
         // Booking Related API
+        app.get('/api/v1/booking', async (req, res) => {
+
+            const user = req.query.user;
+            const guide = req.query.guide;
+
+            const query = {}
+
+            if (user) {
+                query.touristEmail = user
+            }
+            if (guide) {
+                query.tourGuideEmail = guide
+            }
+
+            const result = await bookingCollection.find(query).toArray();
+            res.send(result);
+        })
+
         app.post('/api/v1/booking', async (req, res) => {
             const bookingData = req.body;
             const result = await bookingCollection.insertOne(bookingData);
