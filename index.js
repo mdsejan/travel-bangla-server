@@ -140,6 +140,12 @@ async function run() {
             res.send({ tourGuide });
         })
 
+        app.get('/api/v1/tourguide', async (req, res) => {
+            const query = { role: "tourGuide" }
+            const result = await userCollection.find(query).toArray();
+            res.send(result);
+        })
+
 
         app.post('/api/v1/user', async (req, res) => {
             const user = req.body;
