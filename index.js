@@ -33,6 +33,7 @@ async function run() {
         const wishListCollection = client.db('travelBangla').collection('wishList');
         const tourTypeCollection = client.db('travelBangla').collection('tourType');
         const bookingCollection = client.db('travelBangla').collection('bookings');
+        const tourist_storyCollection = client.db('travelBangla').collection('tourist_story');
 
         // JWT Related API
         app.post('/api/v1/jwt', async (req, res) => {
@@ -289,6 +290,22 @@ async function run() {
             const result = await bookingCollection.updateOne(filter, updatedDoc)
             res.send(result)
         })
+
+
+        // Tourist Story API
+        app.get('/api/v1/touristStory', async (req, res) => {
+            const story = req.query.storyId;
+
+            const query = {}
+
+            if (story) {
+                query._id = new ObjectId(story)
+            }
+
+            const result = await tourist_storyCollection.find(query).toArray();
+            res.send(result);
+        })
+
 
 
 
