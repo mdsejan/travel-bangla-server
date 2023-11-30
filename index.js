@@ -141,10 +141,18 @@ async function run() {
             res.send({ tourGuide });
         })
 
-        // Get tour guide
+        // Get tour guides
         app.get('/api/v1/tourguide', async (req, res) => {
             const query = { role: "tourGuide" }
             const result = await userCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        // find tour guide
+        app.get('/api/v1/find/tourguide/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+            const result = await userCollection.findOne(query);
             res.send(result);
         })
 
@@ -281,6 +289,8 @@ async function run() {
             const result = await bookingCollection.updateOne(filter, updatedDoc)
             res.send(result)
         })
+
+
 
 
 
