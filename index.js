@@ -256,6 +256,32 @@ async function run() {
             res.send(result)
         })
 
+        app.patch('/api/v1/booking/accept/:id', verifyToken, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+
+            const updatedDoc = {
+                $set: {
+                    status: 'Accepted'
+                }
+            }
+            const result = await bookingCollection.updateOne(filter, updatedDoc)
+            res.send(result)
+        })
+
+        app.patch('/api/v1/booking/reject/:id', verifyToken, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+
+            const updatedDoc = {
+                $set: {
+                    status: ' Rejected'
+                }
+            }
+            const result = await bookingCollection.updateOne(filter, updatedDoc)
+            res.send(result)
+        })
+
 
 
     } finally {
